@@ -1,0 +1,11 @@
+{
+  "name": "slide",
+  "version": "1.0.0",
+  "scripts": {
+    "preview": "marp $npm_config_src --theme src/theme/slide.css --preview",
+    "pdf": "marp $npm_config_src --theme src/theme/slide.css --pdf"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "^3.0.0"
+  }
+}

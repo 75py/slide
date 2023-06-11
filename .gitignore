@@ -128,3 +128,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+/.idea/aws.xml
+/.idea/modules.xml
+/.idea/slide.iml
+/.idea/vcs.xml

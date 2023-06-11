@@ -1,0 +1,9 @@
+/*noinspection CssUnknownTarget*/
+@import 'default';
+
+section.top {
+    background-color: lightblue;
+}
+section.title {
+    background-color: lightcyan;
+}

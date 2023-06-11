@@ -12,7 +12,7 @@ marp: true
 https://marp.app/
 > Marp (also known as the Markdown Presentation Ecosystem) provides an intuitive experience for creating beautiful slide decks. You only have to focus on writing your story in a Markdown document.
 
-シンプルなMarkdown形式のテキストファイルからスライドを作成できます。  
+シンプルなMarkdown形式のテキストファイルからスライドを作成できる。  
 このスライドのソースはこちら。  
 https://github.com/75py/slide/blob/main/src/md/marp.md
 

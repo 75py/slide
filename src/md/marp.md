@@ -3,7 +3,7 @@ marp: true
 ---
 <!-- _class: top -->
 
-# Marpを使ったスライドの作成
+# Marpでスライド作成、カスタムテーマとGitHub Actionsによる自動化
 
 ---
 
@@ -11,6 +11,10 @@ marp: true
 
 https://marp.app/
 > Marp (also known as the Markdown Presentation Ecosystem) provides an intuitive experience for creating beautiful slide decks. You only have to focus on writing your story in a Markdown document.
+
+シンプルなMarkdown形式のテキストファイルからスライドを作成できます。  
+このスライドのソースはこちら。  
+https://github.com/75py/slide/blob/main/src/md/marp.md
 
 ---
 
@@ -97,7 +101,7 @@ Markdownではアスタリスク、ハイフンで順序なし箇条書きを表
 ---
 <!-- _class: title -->
 
-# 独自テーマ
+# カスタムテーマ
 
 ---
 
@@ -112,7 +116,7 @@ https://github.com/marp-team/marp-core/tree/main/themes
 
 # defaultを拡張したテーマを作成する
 
-拡張する場合はこれだけ。
+拡張する場合はこれだけで済む。
 
 ```css
 @import 'default';
@@ -163,7 +167,7 @@ section {
 ---
 <!-- _class: title -->
 
-# GitHub Actions
+# GitHub Actionsによる自動化
 
 ---
 
@@ -173,12 +177,120 @@ section {
 - 作成されたPDFファイルをGoogleドライブに置いて共有する（artifactsで保存し、手動でアップロードする）
 - GitHub Pagesで公開する
 
----
-
-# ワークフロー
-
 marp-cli-action を利用するのが一番簡単そう。
 https://github.com/KoharaKazuya/marp-cli-action/blob/main/README.ja.md
+
+---
+
+# ワークフロー（全文）
+
+```yaml
+name: Convert Markdown into PDF
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Convert Markdown into PDF
+        uses: KoharaKazuya/marp-cli-action@v2
+        with:
+          config-file: ./.marprc-ci.yml
+          generate-html: true
+          generate-pdf: true
+
+      - name: Save outputs
+        uses: actions/upload-artifact@v2
+        with:
+          name: output
+          path: ./output
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output
+```
+
+---
+
+# トリガー
+
+```yaml
+name: Convert Markdown into PDF
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+```
+
+- mainブランチがプッシュされたとき
+- 手動実行
+
+---
+
+# marp-cli-action
+
+```yaml
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Convert Markdown into PDF
+        uses: KoharaKazuya/marp-cli-action@v2
+        with:
+          config-file: ./.marprc-ci.yml
+          generate-html: true
+          generate-pdf: true
+```
+
+html, pdfファイルを作成する。設定ファイルは `.marprc-ci.yml` を使用。
+
+---
+
+# 成果物を保存
+
+```yaml
+      - name: Save outputs
+        uses: actions/upload-artifact@v2
+        with:
+          name: output
+          path: ./output
+```
+
+output.zipをダウンロードできるようになる。  
+出力されたファイルをGoogleドライブ等で共有したい場合はこちらを使う。
+
+---
+
+# GitHub Pagesで公開する
+
+```yaml
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output
+```
+
+outputディレクトリのファイルを公開する。
+
+GitHubの `Settings > Actions > General > Workflow permissions` を `Read and write permissions` にする必要あり。 
+
+成功すると、outputディレクトリ配下のファイルが gh-pages ブランチにプッシュされる。  
+https://github.com/75py/slide/tree/gh-pages
+
+良い感じに設定すると、以下のようにアクセスできる。
+https://75py.github.io/slide/marp.html
 
 ---
 
@@ -189,9 +301,5 @@ https://github.com/nektos/act
 
 インストールは `brew install act` だけでOK。  
 もしDockerをインストールしていない場合はDockerも必要。
-
----
-
-# actでテスト実行
 
 `act` で実行できる。  

@@ -4,4 +4,4 @@ theme: src/theme/slide.css
 inputDir: ./src/md
 output: ./output
 pdf: true
-html: false
+html: true

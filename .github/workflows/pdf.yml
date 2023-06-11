@@ -15,7 +15,7 @@ jobs:
         uses: KoharaKazuya/marp-cli-action@v2
         with:
           config-file: ./.marprc-ci.yml
-          generate-html: false
+          generate-html: true
           generate-pdf: true
 
       - name: Save outputs
